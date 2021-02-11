@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  nfs:
+    build: composer
+    volumes:
+      - nfs_app:/app
+      - nfs_composer_cache:/root/.composer
+
+  bind:
+    build: composer
+    volumes:
+      - ./app:/app
+      - ./composer_cache:/root/.composer
+
+volumes:
+  nfs_app:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/app"
+  nfs_composer_cache:
+    driver: local
+    driver_opts:
+      type: nfs
+      o: addr=host.docker.internal,rw,nolock,hard,nointr,nfsvers=3
+      device: ":${PWD}/composer_cache"
